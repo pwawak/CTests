@@ -14,7 +14,7 @@
 #include	<string.h>
 #include	<stdlib.h>
 
-int	fill_table( int** tab, int size );
+int	fill_table( int tab[][15], int size );
 
 int	main() {
 
@@ -22,7 +22,7 @@ int	main() {
 	int	vec[30];
 	int	retVal;
 
-	retVal = fill_table( (int**) tab, 15 );
+	retVal = fill_table( tab, 15 );
 
 	if( retVal != 0 )
 		return retVal;
@@ -39,7 +39,12 @@ int	main() {
 
 	for( int i = 0; i < 15; i++ )
 			for( int j = 0; j < 15; j++ ) {
-			tab[i][j] = vec[ tab[i][j] ];
+				tab[i][j] = vec[ tab[i][j] ];
+			}
+
+	for( int i = 0; i < 15; i++ )
+			for( int j = 0; j < 15; j++ ) {
+				printf( "%d%c", tab[i][j], ( j < 14 ) ? ' ' : '\n' );
 			}
 
 	return 0;
@@ -47,7 +52,7 @@ int	main() {
 
 // ---------------------------------------------------------------
 
-int	fill_table( int** tab, int size ) {
+int	fill_table( int tab[][15], int size ) {
 	// wczytaj tabele liczb.
 
 	for( int i = 0; i < size; i++ ) {
@@ -55,7 +60,10 @@ int	fill_table( int** tab, int size ) {
 		char*	lptr;
 		int		j, val;
 
-		fgets( line, sizeof( line ) / sizeof( char ), stdin );
+		if( NULL == fgets( line, sizeof( line ) / sizeof( char ), stdin ) ) {
+			printf( "Unexpected eof" );
+			return 3;
+		}
 
 		lptr = strtok( line, " " );
 
