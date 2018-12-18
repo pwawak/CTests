@@ -32,3 +32,139 @@
  *
  */
 
+#include    <stdio.h>
+#include    <string.h>
+#include    <stdlib.h>
+
+#define MAX_VEC	100
+
+int read_vector( int vec[], int size, int stop_value ) {
+	char 	str[1001], *sptr, *token;
+	char    delim[3] = " \n";
+	int 	inx = 0;
+
+	printf( "Podaj wektor: " );
+
+	if( NULL == fgets( str, 1000, stdin ) || strlen( str ) != strspn( str, "0123456789- \n") ) {
+		printf( "incorrect input" );
+		return -2;
+	}
+
+	token = strtok( str, delim );
+
+	while( token != NULL ) {
+		if( inx == size )
+			return -1;
+		vec[inx++] = strtol( token, NULL, 10 );
+		token = strtok( NULL, delim );
+	}
+
+	if( inx > 0 && vec[ inx - 1 ] != stop_value ) {
+		printf( "incorrect input" );
+		return -1;
+	}
+
+	return inx;
+}
+
+// -------------------------------------------------------------------------------------
+
+void display_vector(const int vec[], int size) {
+	for( int i = 0; i < size; i++ )
+		printf( "%d%s", vec[ i ], ( i == size - 1 ) ? "\n" : " " );
+}
+
+// -------------------------------------------------------------------------------------
+
+int copy(int dest[], int size, const int src[], int size2) {
+	int i;
+
+	for( i = 0; i < size; i++ )
+		dest[ i ] = src[ i ];
+
+	return i;
+}
+
+// -------------------------------------------------------------------------------------
+
+int unique(int first[], int size) {
+	int vec2[ MAX_VEC ];
+	int inx = 0;
+
+	copy( vec2, size, first, size );
+
+	for (int i = 0; i < size - 1; ++i) {
+		if ( vec2[ i ] != vec2[ i + 1 ] )
+			first[ inx++ ] = vec2[ i ];
+	}
+
+	return inx;
+}
+
+// -------------------------------------------------------------------------------------
+
+int adjacent_find(const int first[], int size) {
+	for (int i = 0; i < size -1; ++i) {
+		if ( first [ i ] == first[ i + 1] )
+			return i;
+	}
+	return -1;
+}
+
+// -------------------------------------------------------------------------------------
+
+int mismatch(const int first[], int size, const int second[], int size2, int out[2]) {
+	int limit, i;
+
+	limit = __min(size, size2 );
+
+	for ( i = 0; i < limit; ++i ) {
+		if ( first [ i ] != second[ i ] ) {
+			out[0] = first[i];
+			out[1] = second[i];
+			return i;
+		}
+	}
+
+	out[ 0 ] = 0;
+	out[ 1 ] = 0;
+
+	return i;
+}
+
+// -------------------------------------------------------------------------------------
+
+int main() {
+	int vec1[MAX_VEC], vec2[ MAX_VEC ], out[ 2 ], size = 0, size2 = 0, retVal;
+
+	if (-1 == (size = read_vector(vec1, sizeof(vec1) / sizeof(int), 0 )))
+		return 1;
+
+	if ( size == 0 ) {
+		printf( "not enough data available\n" );
+		return 2;
+	}
+
+	copy( vec2, size, vec1, size );
+
+	size2 = unique( vec1, size );
+
+	if ( -1 == size2 ) {
+		printf( "Incorrect input\n" );
+		return 1;
+	}
+
+	display_vector( vec1, size2 );
+
+	retVal = adjacent_find( vec2, size );
+
+	printf( "%d\n", retVal );
+
+	retVal = mismatch( vec1, size2, vec2, size, out );
+
+	if ( retVal != -1 ) {
+		printf( "%d %d %d\n", retVal, out[ 0 ], out[ 1 ] );
+	}
+
+	return 0;
+}
