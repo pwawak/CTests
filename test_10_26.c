@@ -26,21 +26,26 @@
 #include <mem.h>
 
 int print_binary_number(char arr[], int diff, int start, int N) {
+	int	retVal = 0;
 
-	if( start >= N ) {
-		if( diff == 0 )
+	if( start >= N )
+		if( diff == 0 ) {
 			printf( "%s\n", arr );
-		return 1;
-	}
+			return 1;
+		}
+		else
+			return 0;
 
 	arr[ start ] = '0';
-	print_binary_number( arr, diff, start+1, N );
+	retVal += print_binary_number( arr, diff, start+1, N );
 	arr[ start ] = '1';
 	if( start >= N/2 )
 		++diff;
 	else
 		--diff;
-	print_binary_number( arr, diff, start+1, N );
+	retVal += print_binary_number( arr, diff, start+1, N );
+
+	return retVal;
 }
 
 // -------------------------------------------------------------------------------------
@@ -48,6 +53,7 @@ int print_binary_number(char arr[], int diff, int start, int N) {
 int main() {
 	char 	x[100];
 	int 	n = 0;
+	int		retVal;
 
 	printf( "Podaj liczbe cyfr: " );
 	if( 0 == scanf( "%d", &n ) ) {
@@ -64,5 +70,7 @@ int main() {
 
 	x[ n ] = '\0';
 
-	print_binary_number( x, 0, 0, n);
+	retVal = print_binary_number( x, 0, 0, n);
+
+	printf( "%d\n", retVal );
 }
